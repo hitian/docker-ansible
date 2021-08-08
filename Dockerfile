@@ -1,8 +1,6 @@
-FROM alpine:latest
+FROM python:3-alpine
 
-RUN apk update && \
-    apk add curl python3-dev openssh-client build-base libffi-dev openssl-dev git && \
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
-    python3 get-pip.py && \
-    python3 -m pip install ansible
-
+RUN apk add --no-cache --virtual .build-deps libffi-dev build-base openssl-dev rust cargo && \
+    pip install --no-cache-dir ansible && \
+    apk del .build-deps && rm -rf /root/.cargo/registry && \
+    apk add --no-cache curl openssh-client git lftp
